@@ -1,18 +1,10 @@
 /* eslint-disable no-unused-vars */
-import validator from 'validator';
-
 import UserRepository from '../models/repositorys/UserRepository';
 
 class UserController {
   async store(req, res) {
     try {
       const { email, password, name } = req.body;
-
-      if (!validator.isEmail(email))
-        return res.status(400).json({ message: 'Email is not valid' });
-
-      if (!validator.isLength(password, { min: 6 }))
-        return res.status(400).json({ message: 'Password is not correct' });
 
       const { password_hash, ...user } = await UserRepository.create({
         email,
@@ -23,6 +15,30 @@ class UserController {
       return res.json({ user });
     } catch (err) {
       return res.status(400).json({ message: err });
+    }
+  }
+
+  async update(req, res) {
+    try {
+      const user = await UserRepository.update(req.body);
+
+      return res.json({ user });
+    } catch (error) {
+      return res.status(401).json({
+        message: error,
+      });
+    }
+  }
+
+  async destroy(req, res) {
+    try {
+      const response = await UserRepository.delete(req.body);
+
+      if (response.error) return res.status(400).json(response);
+
+      return res.status(200).json(response);
+    } catch (error) {
+      return res.status(400).json({ message: error });
     }
   }
 }
