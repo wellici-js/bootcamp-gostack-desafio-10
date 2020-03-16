@@ -5,10 +5,10 @@ import UserController from './app/controllers/UserController';
 
 const routes = new Router();
 
-routes.get('/', (req, res) => res.json({ message: 'Welcome to Omni CLI' }));
-
 routes.post('/user', ValidatorsUserCreate, UserController.store);
 routes.put('/user', ValidatorsUserCreate, UserController.update);
 routes.delete('/user', UserController.destroy);
+routes.get('/user', UserController.show);
+routes.get('/users', UserController.index);
 
 export default routes;

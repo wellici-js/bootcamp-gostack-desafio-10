@@ -2,11 +2,35 @@
 import UserRepository from '../models/repositorys/UserRepository';
 
 class UserController {
+  async index(req, res) {
+    try {
+      const users = await UserRepository.index({ limit: 10 });
+
+      if (users.error) return res.status(400).json(users.error);
+
+      return res.status(200).json(users);
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  }
+
+  async show(req, res) {
+    try {
+      const user = await UserRepository.show(req.body);
+
+      if (user.error) return res.status(400).json(user.error);
+
+      return res.status(200).json({ user });
+    } catch (error) {
+      return res.status(400).json({ error });
+    }
+  }
+
   async store(req, res) {
     try {
       const { email, password, name } = req.body;
 
-      const { password_hash, ...user } = await UserRepository.create({
+      const user = await UserRepository.create({
         email,
         password,
         name,
