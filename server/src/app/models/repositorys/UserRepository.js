@@ -53,26 +53,38 @@ class UserRepository {
 
   async update(data) {
     try {
-      let user = await User.findOne({
+      const userExists = await User.findOne({
         where: {
-          email: data.email,
+          id: data.userId
         },
       });
 
-      if (user) return { message: 'User already exists' };
+      if (!userExists) return { message: 'User does not exists' };
 
-      user = await User.update(
+      const emailExists = await User.findOne({
+        where: {
+          email: data.body.email
+        }
+      })
+
+      if (emailExists && (emailExists.get().email !== userExists.get().email)) return { message: 'Email aleary exists' }
+
+      const [rows, [user]] = await User.update(
         {
           update_at: new Date(),
-          ...data,
+          ...data.body,
         },
         {
+          returning: true,
           where: {
-            email: data.email,
+            id: data.userId,
           },
         }
       );
-      return user;
+
+      const { password_hash, ...dataUser } = user.get();
+
+      return dataUser;
     } catch (error) {
       return error;
     }

@@ -44,7 +44,11 @@ class UserController {
 
   async update(req, res) {
     try {
-      const user = await UserRepository.update(req.body);
+      const { userId, body } = req;
+
+      const user = await UserRepository.update({ userId, body });
+
+      if(user.message) return res.status(401).json(user);
 
       return res.json({ user });
     } catch (error) {
