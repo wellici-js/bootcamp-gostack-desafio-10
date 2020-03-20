@@ -1,21 +1,17 @@
 import { Router } from 'express';
+import multer from 'multer';
 
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
+import FileController from './app/controllers/FileController';
 
 import { ValidatorsUserCreate } from './app/middlewares/ValidatorUserFields';
 import Auth from './app/middlewares/Auth';
 
+import multerConfig from './config/multer';
+
 const routes = Router();
-
-// routes.use('/api', AuthMiddleware);
-
-// routes.use((req, res, next) => {
-//   res.locals.flashSuccess = req.flash('success');
-//   res.locals.flashError = req.flash('error');
-
-//   return next();
-// });
+const uploads = multer(multerConfig);
 
 routes.post('/user', ValidatorsUserCreate, UserController.store);
 routes.post('/session/create', SessionController.store);
@@ -27,5 +23,6 @@ routes.delete('/user', UserController.destroy);
 routes.get('/user', UserController.show);
 routes.get('/users', UserController.index);
 
+routes.post('/files', uploads.single('file'), FileController.store);
 
 export default routes;

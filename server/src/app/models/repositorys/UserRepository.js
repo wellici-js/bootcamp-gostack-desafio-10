@@ -55,7 +55,7 @@ class UserRepository {
     try {
       const userExists = await User.findOne({
         where: {
-          id: data.userId
+          id: data.userId,
         },
       });
 
@@ -63,11 +63,12 @@ class UserRepository {
 
       const emailExists = await User.findOne({
         where: {
-          email: data.body.email
-        }
-      })
+          email: data.body.email,
+        },
+      });
 
-      if (emailExists && (emailExists.get().email !== userExists.get().email)) return { message: 'Email aleary exists' }
+      if (emailExists && emailExists.get().email !== userExists.get().email)
+        return { message: 'Email aleary exists' };
 
       const [rows, [user]] = await User.update(
         {
