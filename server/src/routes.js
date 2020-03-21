@@ -18,9 +18,9 @@ routes.post('/session/create', SessionController.store);
 
 routes.use(Auth);
 
-routes.put('/user', ValidatorsUserCreate, UserController.update);
-routes.delete('/user', UserController.destroy);
-routes.get('/user', UserController.show);
+routes.put('/users', ValidatorsUserCreate, UserController.update);
+routes.delete('/users', UserController.destroy);
+// routes.get('/users/use', UserController.show);
 routes.get('/users', UserController.index);
 
 routes.post('/files', uploads.single('file'), FileController.store);

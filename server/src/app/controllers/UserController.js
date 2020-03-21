@@ -4,7 +4,14 @@ import UserRepository from '../models/repositorys/UserRepository';
 class UserController {
   async index(req, res) {
     try {
-      const users = await UserRepository.index({ limit: 10 });
+      // eslint-disable-next-line prefer-const
+      let { limit, page } = req.query;
+
+      const offset = limit * page - limit;
+
+      if (!limit) limit = 10;
+
+      const users = await UserRepository.index({ limit, page, offset });
 
       if (users.error) return res.status(400).json(users.error);
 
@@ -28,15 +35,16 @@ class UserController {
 
   async store(req, res) {
     try {
-      const { email, password, name } = req.body;
+      const { email, password, name, avatar_id } = req.body;
 
       const user = await UserRepository.create({
         email,
         password,
         name,
+        avatar_id,
       });
 
-      return res.json({ user });
+      return res.json(user);
     } catch (err) {
       return res.status(400).json({ message: err });
     }
@@ -48,7 +56,7 @@ class UserController {
 
       const user = await UserRepository.update({ userId, body });
 
-      if(user.message) return res.status(401).json(user);
+      if (user.message) return res.status(401).json(user);
 
       return res.json({ user });
     } catch (error) {

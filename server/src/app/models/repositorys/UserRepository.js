@@ -5,8 +5,11 @@ import User from '../entitys/User';
 class UserRepository {
   async index(query) {
     try {
+      const { limit, page, offset } = query;
+
       const users = await User.findAll({
-        limit: query.limit,
+        limit,
+        offset,
         attributes: {
           exclude: ['password_hash'],
         },
@@ -39,13 +42,18 @@ class UserRepository {
         attributes: { exclude: ['password_hash'] },
       });
 
-      if (user) return user.get();
+      if (user) {
+        const response = {};
+        response.user = user.get();
+        response.message = 'User aleary exists';
+        return response;
+      }
 
       user = await User.create(data);
 
       const { password_hash, password, ...userData } = user.get();
 
-      return userData;
+      return { user: userData };
     } catch (error) {
       return error;
     }

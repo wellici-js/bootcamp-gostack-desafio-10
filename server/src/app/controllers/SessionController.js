@@ -25,8 +25,6 @@ class SessionController {
       }
 
       const { id, name } = user;
-      // console.log(user, id, name,' user')
-      // req.session.user = user;
 
       return res.json({
         user: {
@@ -34,10 +32,9 @@ class SessionController {
           name,
           email,
         },
-        token: jwt.sign({ id }, process.env.APP_SECRET, { expiresIn: '1d' }),
+        token: jwt.sign({ id }, process.env.APP_SECRET, { expiresIn: '7d' }),
       });
     } catch (error) {
-      console.log(error);
       return res.status(400).json({ error });
     }
   }

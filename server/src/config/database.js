@@ -8,7 +8,6 @@ module.exports = {
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   storage: path.resolve('src', 'database', 'database.sqlite'),
-  // '../database/database.sqlite',
   operatorAliases: false,
   define: {
     timestamps: true,
